@@ -1,0 +1,22 @@
+name: MSX++UnDeadPeopleEdition_v2 composer
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'gfx/MSX\+\+UnDeadPeopleEdition_v2/**'
+      - '.github/workflows/msx_undead_v2_ci_build.yml'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'gfx/MSX\+\+UnDeadPeopleEdition_v2/**'
+      - '.github/workflows/msx_undead_v2_ci_build.yml'
+
+jobs:
+  build:
+    uses: ./.github/workflows/composer_template.yml
+    with:
+      tileset: MSX++UnDeadPeopleEdition_v2
+      composer-args: --use-all
