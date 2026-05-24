@@ -65,9 +65,9 @@ jobs:
             artifact: MshockXotto+
             tileset_dir: gfx/MShockXotto+
             compose_args: --use-all
-          - name: MSX++UnDeadPeopleEdition_v2
-            artifact: MSX++UnDeadPeopleEdition_v2
-            tileset_dir: gfx/MSX++UnDeadPeopleEdition_v2
+          - name: MSXmerge
+            artifact: MSXmerge
+            tileset_dir: gfx/MSXmerge
             compose_args: --use-all
 #          - name: NeoDays
 #            artifact: NeoDaysTileset

@@ -1,18 +1,18 @@
-name: MSX++UnDeadPeopleEdition_v2 composer
+name: MSXmerge composer
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'gfx/MSX\+\+UnDeadPeopleEdition_v2/**'
-      - '.github/workflows/msx_undead_v2_ci_build.yml'
+      - 'gfx/MSXmerge/**'
+      - '.github/workflows/msxmerge_ci_build.yml'
   pull_request:
     branches:
       - master
     paths:
-      - 'gfx/MSX\+\+UnDeadPeopleEdition_v2/**'
-      - '.github/workflows/msx_undead_v2_ci_build.yml'
+      - 'gfx/MSXmerge/**'
+      - '.github/workflows/msxmerge_ci_build.yml'
 
 jobs:
   build:
