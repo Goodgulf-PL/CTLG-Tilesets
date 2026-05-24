@@ -18,5 +18,5 @@ jobs:
   build:
     uses: ./.github/workflows/composer_template.yml
     with:
-      tileset: MSX++UnDeadPeopleEdition_v2
+      tileset: MSXmerge
       composer-args: --use-all
