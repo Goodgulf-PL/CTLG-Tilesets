@@ -8,7 +8,7 @@ This repository stores sprite assets for **Cataclysm: The Last Generation** (CTL
 
 ## Building Tilesets
 
-**Prerequisites:** Python 3, `pyvips`, and `libvips`.
+**Prerequisites:** Python 3, `pyvips`, and `libvips`. See `tools/requirements.txt` for exact dependencies.
 
 ```sh
 # Via Nix (recommended — enters a devshell with all deps)
@@ -19,31 +19,88 @@ python3 tools/compose.py --use-all gfx/<TilesetName> out/
 nix build .#UltimateCataclysm   # output in ./result/
 
 # Manual (requires pyvips installed)
-pip3 install pyvips
-python3 /path/to/compose.py --use-all gfx/<TilesetName> out/
+pip3 install -r tools/requirements.txt
+python3 tools/compose.py --use-all gfx/<TilesetName> out/
 ```
 
-`compose.py` is maintained in the upstream CDDA repo (`tools/gfx_tools/compose.py`) and is downloaded fresh by CI at build time. It is not vendored here.
+A local copy of `compose.py` lives at `tools/compose.py` for convenience. It is also maintained in the upstream CDDA repo (`tools/gfx_tools/compose.py`) and CI downloads a fresh copy at build time, which may differ.
 
 Common `compose.py` flags used in CI:
 - `--use-all` — include all sprites (most tilesets)
 - `--obsolete-fillers` — also include obsolete filler sprites (Altica, BrownLikeBears, HollowMoon, UltimateCataclysm)
 - `--feedback CONCISE --loglevel INFO` — used in CI for readable output
 
-## Autotile Slicing Tools
+## Tools Reference
 
-`tools/slice_multitile.py` — slices a multitile template PNG into individual tile images + JSON connection data:
+### Autotile / Slicing
+
+`tools/slice_multitile.py` — slices a multitile template PNG into individual tile images + JSON connection data. `tools/slicemt.py` is a Windows-oriented wrapper that auto-detects paths from the repo layout.
 
 ```sh
-tools/slice_multitile.py mud_autotile.png 32 --out mud_tiles
-tools/slice_multitile.py --iso iso_autotile.png 64  # isometric
+python3 tools/slice_multitile.py mud_autotile.png 32 --out mud_tiles
+python3 tools/slice_multitile.py --iso iso_autotile.png 64  # isometric
 ```
 
 `tools/slice_variants.py` — slices randomly-weighted sprite variant sheets:
 
 ```sh
-tools/slice_variants.py t_floor_multitile.png 32 32
+python3 tools/slice_variants.py t_floor_multitile.png 32 32
 ```
+
+`tools/unslice_multitile.py` — inverse of slice_multitile; reassembles individual named tile PNGs back into a 4×4 or 5×5 template grid:
+
+```sh
+python3 tools/unslice_multitile.py --path gfx/MShockXotto+/pngs_normal_32x32 --tile mud
+python3 tools/unslice_multitile.py --iso --path gfx/Ultica_iso/pngs_large_64x64 --tile t_dirt
+```
+
+### Sprite Processing
+
+`tools/add_outline.py` — adds a 1-pixel black outline to every PNG in a folder (in-place):
+
+```sh
+python3 tools/add_outline.py gfx/MShockXotto+/pngs_normal_32x32/monsters
+```
+
+`tools/recolor_season_variants.py` — generates autumn/winter/summer/spring recolors for HollowMoon sprites. Place a `<season>.png` source file inside a subfolder named after the game object ID, then run against the tileset root:
+
+```sh
+python3 tools/recolor_season_variants.py gfx/HollowMoon
+```
+
+`tools/ultica_build_flags.py` — Ultica-specific script that sets build flags for the Ultica tileset variants. Also available as `tools/ultica_build_flags.cmd` on Windows.
+
+### Preview Generation
+
+`tools/generate_preview.py` — renders a composite preview PNG from game sprites. Requires `pyvips`.
+
+```sh
+# Items preview
+python3 tools/generate_preview.py -i gfx -o preview.png --scale 2 --items rock sharp_rock
+
+# Worn/wielded overlays (with skin tone)
+python3 tools/generate_preview.py -i gfx -o preview.png --scale 2 --overlays jeans rebar --overlay-skin dark
+
+# Monsters
+python3 tools/generate_preview.py -i gfx -o preview.png --scale 2 --monster mon_bear mon_zombie
+
+# Anything by subfolder path
+python3 tools/generate_preview.py -i gfx -o preview.png --scale 2 --from-path pngs_normal_32x32/monsters
+```
+
+### Coverage / QA
+
+`tools/check_overmap_coverage.py` — compares overmap sprites in a tileset against all overmap IDs defined in the game data, showing what's missing. Needs a path to the CDDA game directory (or set `GAME_DIR` / use `tools/set_game_path.cmd` on Windows).
+
+```sh
+python3 tools/check_overmap_coverage.py /path/to/cdda gfx/MShockXotto+
+python3 tools/check_overmap_coverage.py /path/to/cdda gfx/MShockXotto+ --todo   # missing only
+python3 tools/check_overmap_coverage.py /path/to/cdda gfx/MShockXotto+ --sort percent
+```
+
+### Windows helpers
+
+`.cmd` scripts in `tools/` set environment variables for the build tools: `set_game_path.cmd`, `set_tileset.cmd`, `set_vips_path.cmd`. Run them once per shell session before using other scripts. `updtset.cmd` is a convenience wrapper that slices and copies output into the active game install.
 
 ## Repository Architecture
 
