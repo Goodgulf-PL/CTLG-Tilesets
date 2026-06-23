@@ -4,14 +4,12 @@ on:
   push:
     branches:
       - master
-      - test_rings
     paths:
       - 'gfx/MShockXotto\+/**'
       - '.github/workflows/msx_ci_build.yml'
   pull_request:
     branches:
       - master
-      - test_rings
     paths:
       - 'gfx/MShockXotto\+/**'
       - '.github/workflows/msx_ci_build.yml'
