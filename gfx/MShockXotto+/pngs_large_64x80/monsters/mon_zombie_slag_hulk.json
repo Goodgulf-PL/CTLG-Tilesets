@@ -1,0 +1,8 @@
+{
+  "id": "mon_zombie_slag_hulk",
+  "fg": [
+    "mon_zombie_slag_hulk"
+  ],
+  "bg": ["shadow_64x80"],
+  "rotates": false
+}
